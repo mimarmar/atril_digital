@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Atril Digital</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#17233B">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png" type="image/png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Atril Digital">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root{
+    --ink:#17233B;
+    --ink-deep:#0F1729;
+    --paper:#FBF6EA;
+    --paper-shadow:#E9E0CC;
+    --gold:#C79A3E;
+    --gold-bright:#E0B857;
+    --velvet:#B4485C;
+    --text-dark:#22242B;
+    --muted:#8A8FA3;
+    --line:rgba(199,154,62,0.35);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+
+  html,body{margin:0; padding:0; height:100%;}
+
+  body{
+    background:
+      radial-gradient(ellipse at top, #1E2E4D 0%, var(--ink) 55%, var(--ink-deep) 100%);
+    color:var(--paper);
+    font-family:'Work Sans', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  .staff{
+    width:100%;
+    height:34px;
+    position:relative;
+    margin:0 auto;
+  }
+  .staff::before{
+    content:"";
+    position:absolute;
+    left:0; right:0; top:0; bottom:0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      var(--line) 0px, var(--line) 1.5px,
+      transparent 1.5px, transparent 8px
+    );
+  }
+
+  header{
+    padding:28px 24px 8px;
+    max-width:1100px;
+    margin:0 auto;
+  }
+
+  .eyebrow{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    margin:0 0 6px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(32px, 5vw, 52px);
+    margin:0 0 4px;
+    color:var(--paper);
+    letter-spacing:-0.01em;
+  }
+
+  .subtitle{
+    color:var(--muted);
+    font-size:16px;
+    max-width:560px;
+    line-height:1.5;
+    margin:0 0 18px;
+  }
+
+  main{
+    max-width:1100px;
+    margin:0 auto;
+    padding:12px 24px 60px;
+  }
+
+  .add-card{
+    background:var(--paper);
+    color:var(--text-dark);
+    border-radius:18px;
+    padding:22px 24px;
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+    margin-bottom:36px;
+  }
+
+  .add-card summary{
+    cursor:pointer;
+    list-style:none;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+  }
+  .add-card summary::-webkit-details-marker{ display:none; }
+  .add-card summary .plus{
+    width:34px; height:34px;
+    border-radius:50%;
+    background:var(--velvet);
+    color:var(--paper);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+    flex-shrink:0;
+    transition:transform 0.25s ease;
+  }
+  details[open] .add-card summary .plus{ transform:rotate(45deg); }
+
+  .form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-top:20px;
+  }
+  @media (max-width:640px){ .form-grid{ grid-template-columns:1fr; } }
+
+  .field{ display:flex; flex-direction:column; gap:6px; }
+  .field label{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:#6B6F76;
+  }
+  .field input[type=text]{
+    font-family:'Work Sans', sans-serif;
+    font-size:16px;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1.5px solid var(--paper-shadow);
+    background:#fff;
+    color:var(--text-dark);
+  }
+  .field input[type=file]{
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+    padding:10px 4px;
+  }
+  .field.full{ grid-column:1 / -1; }
+
+  .type-toggle{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .type-btn{
+    flex:1;
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1.5px solid var(--paper-shadow);
+    background:#fff;
+    color:#8A8FA3;
+    cursor:pointer;
+  }
+  .type-btn.active{
+    border-color:var(--velvet);
+    color:var(--velvet);
+    background:rgba(180,72,92,0.08);
+    font-weight:700;
+  }
+  #scoreText{
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1.5px solid var(--paper-shadow);
+    background:#fff;
+    color:var(--text-dark);
+    min-height:140px;
+    resize:vertical;
+    width:100%;
+  }
+  .field-hint{
+    font-size:12.5px;
+    color:#8A8FA3;
+    margin:2px 0 0;
+  }
+
+  .save-btn{
+    margin-top:18px;
+    background:var(--velvet);
+    color:var(--paper);
+    border:none;
+    font-family:'Space Mono', monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    font-size:13px;
+    padding:14px 26px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:filter 0.15s ease, transform 0.1s ease;
+  }
+  .save-btn:active{ transform:scale(0.97); }
+  .save-btn:hover{ filter:brightness(1.08); }
+  .save-btn:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .hint{ font-size:13px; color:var(--muted); margin-top:2px; }
+
+  .db-card{
+    background:rgba(251,246,234,0.06);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:20px 22px;
+    margin-bottom:30px;
+  }
+  .db-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    color:var(--gold-bright);
+    margin:0 0 6px;
+  }
+  .db-text{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+    margin:0 0 16px;
+    max-width:620px;
+  }
+  .db-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  .db-btn{
+    background:var(--gold);
+    color:var(--ink-deep);
+    border:none;
+    font-family:'Space Mono', monospace;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    font-size:12.5px;
+    font-weight:700;
+    padding:11px 18px;
+    border-radius:9px;
+    cursor:pointer;
+  }
+  .db-btn:hover{ filter:brightness(1.08); }
+  .db-btn:active{ transform:scale(0.97); }
+  .db-btn-outline{
+    background:none;
+    border:1.5px solid var(--gold);
+    color:var(--gold-bright);
+  }
+  .db-status{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+    margin:12px 0 0;
+    min-height:16px;
+  }
+
+  .search-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .search-input{
+    flex:1 1 220px;
+    font-family:'Work Sans', sans-serif;
+    font-size:15px;
+    padding:12px 16px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:rgba(251,246,234,0.08);
+    color:var(--paper);
+  }
+  .search-input::placeholder{ color:var(--muted); }
+  .search-input:focus, .filter-select:focus{
+    outline:2px solid var(--gold);
+    outline-offset:1px;
+  }
+  .filter-select{
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    background:rgba(251,246,234,0.08);
+    color:var(--paper);
+    cursor:pointer;
+  }
+  .filter-select option{ color:var(--text-dark); }
+
+  .no-results{
+    border:1.5px dashed var(--line);
+    border-radius:16px;
+    padding:32px 24px;
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    grid-column:1 / -1;
+  }
+
+  .card-category{
+    display:inline-block;
+    margin-top:6px;
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--velvet);
+    background:rgba(180,72,92,0.1);
+    padding:3px 8px;
+    border-radius:6px;
+  }
+
+  /* ---- Repertorios (setlists) ---- */
+  .section-divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:44px 0 18px;
+  }
+  .section-divider::before, .section-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .section-divider span{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    white-space:nowrap;
+  }
+  .section-subtext{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.5;
+    max-width:600px;
+    margin:0 0 18px;
+  }
+
+  .setlist-form .field{ margin-bottom:16px; }
+  .song-picker{
+    max-height:260px;
+    overflow-y:auto;
+    border:1.5px solid var(--paper-shadow);
+    border-radius:10px;
+    background:#fff;
+  }
+  .picker-empty{
+    padding:20px 16px;
+    color:#9aa0a8;
+    font-size:14px;
+    text-align:center;
+  }
+  .picker-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 14px;
+    border-bottom:1px solid #F0EAD9;
+    cursor:pointer;
+  }
+  .picker-item:last-child{ border-bottom:none; }
+  .picker-item:hover{ background:#FAF7EE; }
+  .picker-item input[type=checkbox]{
+    width:18px; height:18px;
+    accent-color:var(--velvet);
+    flex-shrink:0;
+  }
+  .picker-item-text{ flex:1; min-width:0; }
+  .picker-item-title{
+    font-family:'Work Sans', sans-serif;
+    font-weight:500;
+    font-size:14.5px;
+    color:var(--text-dark);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .picker-item-meta{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:#9C8C63;
+  }
+  .field-hint#pickerCount{ margin-top:8px; }
+
+  .setlist-card{
+    background:linear-gradient(160deg, var(--ink) 0%, #223050 100%);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow:0 10px 24px rgba(0,0,0,0.28);
+  }
+  .setlist-card:hover{ transform:translateY(-3px); box-shadow:0 16px 30px rgba(0,0,0,0.35); }
+  .setlist-card:active{ transform:scale(0.97); }
+  .setlist-card-icon{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    color:var(--gold-bright);
+  }
+  .setlist-card-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    color:var(--paper);
+    margin:0;
+    line-height:1.25;
+  }
+  .setlist-card-meta{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.04em;
+    color:var(--muted);
+  }
+  .setlist-card-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .setlist-chip{
+    font-family:'Space Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    border:1px solid var(--line);
+    padding:3px 8px;
+    border-radius:6px;
+  }
+
+  /* ---- Setlist detail / editing view ---- */
+  .setlist-detail{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 20px 40px;
+    max-width:720px;
+    margin:0 auto;
+    width:100%;
+  }
+  .setlist-detail-header{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .setlist-song-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--paper);
+    border-radius:12px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    color:var(--text-dark);
+  }
+  .setlist-song-index{
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    color:var(--muted);
+    width:22px;
+    flex-shrink:0;
+    text-align:center;
+  }
+  .setlist-song-info{ flex:1; min-width:0; cursor:pointer; }
+  .setlist-song-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:15.5px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .setlist-song-cat{
+    font-family:'Space Mono', monospace;
+    font-size:10.5px;
+    color:var(--velvet);
+    text-transform:uppercase;
+  }
+  .row-btn{
+    width:30px; height:30px;
+    border-radius:7px;
+    border:1.5px solid var(--paper-shadow);
+    background:#fff;
+    color:var(--text-dark);
+    font-size:13px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .row-btn:disabled{ opacity:0.3; cursor:default; }
+  .row-btn.danger{ color:var(--velvet); border-color:rgba(180,72,92,0.5); }
+  .row-play{
+    background:var(--velvet);
+    color:var(--paper);
+    border:none;
+  }
+  .setlist-empty-detail{
+    border:1.5px dashed var(--line);
+    border-radius:14px;
+    padding:30px 20px;
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:16px;
+  }
+  .add-songs-toggle{
+    margin-top:22px;
+  }
+  .add-songs-toggle summary{
+    cursor:pointer;
+    list-style:none;
+    font-family:'Space Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    padding:10px 0;
+  }
+  .add-songs-toggle summary::-webkit-details-marker{ display:none; }
+
+  /* ---- Setlist playback context bar in main viewer ---- */
+  .setlist-context-bar{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:9px 16px;
+    background:rgba(180,72,92,0.12);
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+    flex-wrap:wrap;
+  }
+  .setlist-context-bar.open{ display:flex; }
+  .setlist-context-label{
+    font-family:'Space Mono', monospace;
+    font-size:11.5px;
+    color:var(--gold-bright);
+    letter-spacing:0.03em;
+  }
+
+  .shelf-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:0 0 14px;
+  }
+
+  .shelf-title{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--gold-bright);
+    margin:0;
+  }
+
+  .clear-btn{
+    border:1.5px solid rgba(180,72,92,0.6);
+    color:var(--velvet);
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:7px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    background:var(--paper);
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+    gap:18px;
+  }
+
+  .empty{
+    border:1.5px dashed var(--line);
+    border-radius:16px;
+    padding:40px 24px;
+    text-align:center;
+    color:var(--muted);
+    font-size:15px;
+  }
+
+  .card{
+    background:var(--paper);
+    border-radius:14px;
+    padding:0;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 10px 24px rgba(0,0,0,0.28);
+    transition:transform 0.18s ease, box-shadow 0.18s ease;
+    display:flex;
+    flex-direction:column;
+    color:var(--text-dark);
+  }
+  .card:active{ transform:scale(0.97); }
+  .card:hover{ transform:translateY(-3px); box-shadow:0 16px 30px rgba(0,0,0,0.35); }
+
+  .card-thumb{
+    height:120px;
+    background:linear-gradient(135deg, #f2ead6, #e7dcc0);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    border-bottom:2px solid var(--gold);
+    overflow:hidden;
+  }
+  .card-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .card-thumb .pdf-icon, .card-thumb .no-score{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:#9C8C63;
+    text-transform:uppercase;
+  }
+  .card-thumb .txt-icon{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:#9C8C63;
+    text-transform:uppercase;
+  }
+
+  .card-body{ padding:14px 16px 16px; }
+  .card-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    margin:0 0 4px;
+    line-height:1.25;
+  }
+  .card-meta{
+    font-family:'Space Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.04em;
+  }
+
+  .card-delete{
+    position:absolute;
+    top:8px; right:8px;
+    width:26px; height:26px;
+    border-radius:50%;
+    background:rgba(20,20,20,0.55);
+    color:#fff;
+    border:none;
+    font-size:14px;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  .viewer-overlay{
+    position:fixed; inset:0;
+    background:var(--ink-deep);
+    z-index:50;
+    display:none;
+    flex-direction:column;
+  }
+  .viewer-overlay.open{ display:flex; }
+
+  .viewer-top{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+    border-bottom:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .back-btn{
+    background:none; border:1.5px solid var(--gold);
+    color:var(--gold-bright);
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:9px 16px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .viewer-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:20px;
+    color:var(--paper);
+    text-align:center;
+    flex:1;
+    margin:0 12px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .viewer-score{
+    flex:1;
+    overflow:auto;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:18px;
+    background:repeating-linear-gradient(45deg, #10192C, #10192C 20px, #0E1727 20px, #0E1727 40px);
+  }
+  .viewer-score.pdf-mode{
+    overflow:hidden;
+    align-items:center;
+  }
+  .viewer-score img{
+    max-width:100%;
+    border-radius:6px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    background:#fff;
+  }
+  .no-file-msg{
+    color:var(--muted);
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    text-align:center;
+    margin-top:60px;
+  }
+
+  .lyrics-view{
+    max-width:640px;
+    width:100%;
+    background:#fff;
+    color:var(--text-dark);
+    border-radius:10px;
+    padding:36px 40px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    white-space:pre-wrap;
+    line-height:1.7;
+    font-family:'Fraunces', serif;
+    font-size:20px;
+  }
+
+  .pdf-canvas-wrap{
+    position:relative;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    touch-action:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  #pdfCanvas{
+    border-radius:6px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    background:#fff;
+    max-width:100%;
+    max-height:100%;
+  }
+  /* ---- Modo pantalla completa para PDF ---- */
+  .chrome-top, .chrome-bottom{ flex-shrink:0; }
+  .viewer-overlay.immersive .viewer-score{ padding:6px; }
+  .viewer-overlay.immersive .chrome-top,
+  .viewer-overlay.immersive .chrome-bottom{
+    position:absolute;
+    left:0; right:0;
+    z-index:20;
+    opacity:0;
+    pointer-events:none;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+  .viewer-overlay.immersive .chrome-top{
+    top:0;
+    transform:translateY(-100%);
+    background:rgba(15,23,41,0.97);
+  }
+  .viewer-overlay.immersive .chrome-bottom{
+    bottom:0;
+    transform:translateY(100%);
+  }
+  .viewer-overlay.immersive.controls-visible .chrome-top,
+  .viewer-overlay.immersive.controls-visible .chrome-bottom{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0);
+  }
+  .page-badge{
+    position:absolute;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:15;
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    color:var(--paper);
+    background:rgba(15,23,41,0.7);
+    padding:5px 14px;
+    border-radius:999px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.2s ease;
+  }
+  .viewer-overlay.immersive:not(.controls-visible) .page-badge.on{ opacity:0.75; }
+  .gesture-hint{
+    position:absolute;
+    left:50%;
+    bottom:56px;
+    transform:translateX(-50%);
+    z-index:25;
+    max-width:86%;
+    text-align:center;
+    font-family:'Work Sans', sans-serif;
+    font-size:14px;
+    line-height:1.4;
+    color:var(--paper);
+    background:rgba(15,23,41,0.88);
+    border:1px solid var(--line);
+    padding:10px 18px;
+    border-radius:12px;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.4s ease;
+  }
+  .gesture-hint.show{ opacity:1; }
+
+  .pdf-tap{
+    position:absolute;
+    top:0; bottom:0;
+    width:30%;
+    display:flex;
+    align-items:center;
+    cursor:pointer;
+    opacity:0;
+    transition:opacity 0.15s ease;
+    font-size:26px;
+    color:var(--gold-bright);
+  }
+  .pdf-tap:active{ opacity:1; }
+  .pdf-tap-left{ left:0; justify-content:flex-start; padding-left:10px; }
+  .pdf-tap-right{ right:0; justify-content:flex-end; padding-right:10px; }
+  .pdf-tap.disabled{ pointer-events:none; }
+
+  .pdf-nav-bar{
+    display:none;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:10px 20px;
+    background:var(--ink-deep);
+    border-top:1px solid var(--line);
+    flex-shrink:0;
+  }
+  .nav-sep{
+    width:1px;
+    height:22px;
+    background:var(--line);
+    margin:0 4px;
+  }
+  .zoom-btn{ min-width:40px; }
+  .nav-btn{
+    background:none;
+    border:1.5px solid var(--gold);
+    color:var(--gold-bright);
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.04em;
+    padding:8px 16px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  .nav-btn:disabled{ opacity:0.3; cursor:default; }
+  .page-indicator{
+    font-family:'Space Mono', monospace;
+    font-size:13px;
+    color:var(--muted);
+    min-width:90px;
+    text-align:center;
+  }
+
+  .pdf-canvas-wrap.zoomed{
+    overflow:auto;
+    align-items:flex-start;
+    justify-content:flex-start;
+    touch-action:pan-x pan-y;
+    overscroll-behavior:contain;
+  }
+  .pdf-canvas-wrap.zoomed #pdfCanvas{
+    max-width:none;
+    max-height:none;
+    margin:auto;       /* centrado si cabe; si no cabe, se desplaza con el dedo */
+    flex-shrink:0;
+  }
+
+  .font-size-controls{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+  }
+  .font-btn{
+    width:34px; height:34px;
+    border-radius:8px;
+    border:1.5px solid var(--paper-shadow);
+    background:#fff;
+    color:var(--text-dark);
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+  }
+
+  .player-bar{
+    flex-shrink:0;
+    background:var(--paper);
+    padding:14px 20px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-top:3px solid var(--gold);
+  }
+  .play-toggle{
+    width:46px; height:46px;
+    border-radius:50%;
+    background:var(--velvet);
+    color:var(--paper);
+    border:none;
+    font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+  }
+  .progress-wrap{ flex:1; display:flex; align-items:center; gap:10px; }
+  .time{
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    color:var(--text-dark);
+    min-width:40px;
+  }
+  input[type=range]{
+    flex:1;
+    accent-color:var(--velvet);
+    height:22px;
+  }
+
+  @media (max-width:640px){
+    .viewer-title{ font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="staff"></div>
+
+<header>
+  <p class="eyebrow">Voz &amp; Papel</p>
+  <h1>Atril Digital</h1>
+  <p class="subtitle">Vincula la letra de una canción — como PDF, imagen o texto escrito — con su pista de audio, y agrupa tu repertorio según la actuación: una boda, un ensayo, un concierto. Todo se guarda en este dispositivo.</p>
+</header>
+
+<main>
+  <details class="add-card" id="addCard">
+    <summary><span class="plus">+</span> Añadir una canción</summary>
+    <form id="songForm">
+      <div class="form-grid">
+        <div class="field full">
+          <label for="title">Título de la canción</label>
+          <input type="text" id="title" placeholder="Ej. Ave María — Schubert" required>
+        </div>
+        <div class="field full">
+          <label>Letra o partitura</label>
+          <div class="type-toggle">
+            <button type="button" class="type-btn active" id="typePdfBtn" data-type="pdf">📄 Subir PDF</button>
+            <button type="button" class="type-btn" id="typeImageBtn" data-type="image">🖼️ Subir imagen</button>
+            <button type="button" class="type-btn" id="typeTextBtn" data-type="text">✏️ Escribir texto</button>
+          </div>
+          <input type="file" id="scoreFile" accept="application/pdf">
+          <textarea id="scoreText" placeholder="Pega o escribe aquí la letra…" style="display:none;"></textarea>
+          <p class="field-hint" id="fileHint">Un archivo PDF con la letra o partitura de la canción.</p>
+        </div>
+        <div class="field">
+          <label for="audioFile">Audio (mp3)</label>
+          <input type="file" id="audioFile" accept="audio/*" required>
+        </div>
+        <div class="field full">
+          <label for="category">Tema o categoría (opcional)</label>
+          <input type="text" id="category" list="categoryList" placeholder="Ej. Clásica, Pop, Ensayo coro, Boda…">
+          <datalist id="categoryList"></datalist>
+        </div>
+      </div>
+      <button type="submit" class="save-btn">Guardar en el atril</button>
+      <p class="hint">Sube un PDF, una imagen, o escribe la letra a mano. Todo se guarda en este dispositivo y en este navegador — no se sube a ningún servidor.</p>
+    </form>
+  </details>
+
+  <div class="db-card">
+    <p class="db-title">Tu base de datos portátil</p>
+    <p class="db-text">Genera un archivo único con todas tus letras/partituras, audios y repertorios dentro. Guárdalo en Archivos, iCloud, Google Drive o donde prefieras. Es tuyo, no depende del navegador: puedes cargarlo en otra tablet o recuperarlo si borras datos del navegador.</p>
+    <div class="db-actions">
+      <button type="button" class="db-btn" id="exportBtn">⬇ Exportar base de datos</button>
+      <button type="button" class="db-btn db-btn-outline" id="importBtn">⬆ Importar base de datos</button>
+      <input type="file" id="importInput" accept="application/json" style="display:none;">
+    </div>
+    <p class="db-status" id="dbStatus"></p>
+  </div>
+
+  <div class="shelf-header">
+    <p class="shelf-title" id="shelfCount">Tu repertorio</p>
+    <button class="clear-btn" id="clearBtn" style="display:none;">Vaciar repertorio</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="search" id="searchInput" class="search-input" placeholder="Buscar por título o tema…">
+    <select id="categoryFilter" class="filter-select">
+      <option value="all">Todos los temas</option>
+    </select>
+    <select id="sortSelect" class="filter-select">
+      <option value="recent">Más recientes primero</option>
+      <option value="az">Alfabético (A–Z)</option>
+      <option value="za">Alfabético (Z–A)</option>
+      <option value="category">Por tema</option>
+    </select>
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="empty" id="emptyMsg">Cargando tu repertorio…</div>
+  </div>
+
+  <div class="section-divider"><span>Para tus actuaciones</span></div>
+
+  <details class="add-card" id="setlistCreator">
+    <summary><span class="plus">+</span> Crear repertorio</summary>
+    <div class="setlist-form">
+      <div class="field full">
+        <label for="setlistName">Nombre del repertorio</label>
+        <input type="text" id="setlistName" placeholder="Ej. Boda de Marta y Juan, Ensayo coro, Concierto de Navidad…">
+      </div>
+      <div class="field full">
+        <label>Selecciona canciones de tu biblioteca</label>
+        <input type="search" id="setlistSongSearch" class="search-input" placeholder="Buscar canciones…" style="margin-bottom:10px; color:var(--text-dark); background:#fff; border:1.5px solid var(--paper-shadow);">
+        <div class="song-picker" id="songPicker"></div>
+        <p class="field-hint" id="pickerCount">0 canciones seleccionadas</p>
+      </div>
+      <button type="button" class="save-btn" id="saveSetlistBtn">Guardar repertorio</button>
+    </div>
+  </details>
+
+  <div class="shelf-header">
+    <p class="shelf-title" id="setlistShelfTitle">Tus repertorios</p>
+  </div>
+  <div class="grid" id="setlistGrid">
+    <div class="empty" id="setlistEmptyMsg">Aún no has creado ningún repertorio. Elige canciones de tu biblioteca arriba y agrúpalas según la actuación: una boda, un ensayo, un concierto…</div>
+  </div>
+</main>
+
+<!-- Viewer / music stand -->
+<div class="viewer-overlay" id="viewer">
+  <div class="chrome-top" id="chromeTop">
+  <div class="viewer-top">
+    <button class="back-btn" id="backBtn">← Atril</button>
+    <h2 class="viewer-title" id="viewerTitle"></h2>
+    <div class="font-size-controls" id="fontControls" style="display:none;">
+      <button class="font-btn" id="fontMinus">A−</button>
+      <button class="font-btn" id="fontPlus">A+</button>
+    </div>
+  </div>
+  <div class="setlist-context-bar" id="setlistContextBar">
+    <button class="nav-btn" id="setlistPrevBtn">‹ Anterior</button>
+    <span class="setlist-context-label" id="setlistContextLabel"></span>
+    <button class="nav-btn" id="setlistNextBtn">Siguiente ›</button>
+  </div>
+  </div>
+  <div class="viewer-score" id="viewerScore"></div>
+  <div class="page-badge" id="pageBadge"></div>
+  <div class="gesture-hint" id="gestureHint">Toca los lados o desliza para pasar de página · Toca el centro para ver los controles</div>
+  <div class="chrome-bottom" id="chromeBottom">
+  <div class="pdf-nav-bar" id="pdfNavBar">
+    <button class="nav-btn" id="prevPageBtn">‹ Anterior</button>
+    <span class="page-indicator" id="pageIndicator">Página 1 de 1</span>
+    <button class="nav-btn" id="nextPageBtn">Siguiente ›</button>
+    <span class="nav-sep"></span>
+    <button class="nav-btn zoom-btn" id="zoomOutBtn">－</button>
+    <span class="page-indicator" id="zoomIndicator">100%</span>
+    <button class="nav-btn zoom-btn" id="zoomInBtn">＋</button>
+    <button class="nav-btn zoom-btn" id="zoomResetBtn">Ajustar</button>
+  </div>
+  <div class="player-bar">
+    <button class="play-toggle" id="playToggle">▶</button>
+    <div class="progress-wrap">
+      <span class="time" id="curTime">0:00</span>
+      <input type="range" id="seek" value="0" min="0" max="100" step="0.1">
+      <span class="time" id="durTime">0:00</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<audio id="player"></audio>
+
+<!-- Setlist detail / edit overlay -->
+<div class="viewer-overlay" id="setlistViewerOverlay">
+  <div class="viewer-top">
+    <button class="back-btn" id="setlistBackBtn">← Repertorios</button>
+    <h2 class="viewer-title" id="setlistViewerTitle"></h2>
+    <button class="back-btn" id="deleteSetlistBtn" style="border-color:var(--velvet); color:var(--velvet);">Eliminar</button>
+  </div>
+  <div class="setlist-detail" id="setlistDetail"></div>
+</div>
+
+<script>
+  // ---- Almacenamiento persistente en el dispositivo (IndexedDB) ----
+  const DB_NAME = 'partiturarioDB';
+  const DB_VERSION = 2;
+  const STORE_NAME = 'songs';
+  const SETLIST_STORE = 'setlists';
+
+  function openDB(){
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if(!db.objectStoreNames.contains(STORE_NAME)){
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+        }
+        if(!db.objectStoreNames.contains(SETLIST_STORE)){
+          db.createObjectStore(SETLIST_STORE, { keyPath: 'id' });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function dbPut(song){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).put(song);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function dbGetAll(){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const req = tx.objectStore(STORE_NAME).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function dbDelete(id){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function dbClear(){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      tx.objectStore(STORE_NAME).clear();
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function dbPutSetlist(setlist){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(SETLIST_STORE, 'readwrite');
+      tx.objectStore(SETLIST_STORE).put(setlist);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function dbGetAllSetlists(){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(SETLIST_STORE, 'readonly');
+      const req = tx.objectStore(SETLIST_STORE).getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function dbDeleteSetlist(id){
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(SETLIST_STORE, 'readwrite');
+      tx.objectStore(SETLIST_STORE).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  let songs = []; // { id, title, category, scoreType, scoreBlob, scoreText, audioBlob, scoreURL, audioURL, dateAdded }
+  let setlists = []; // { id, name, songIds: [id, id, …], dateCreated }
+  let currentSong = null;
+  let activeSetlist = null;   // setlist object currently being played through, or null
+  let activeSetlistIndex = -1;
+  let openSetlistDetailId = null; // id of setlist currently open in the detail overlay
+
+  const grid = document.getElementById('grid');
+  const emptyMsg = document.getElementById('emptyMsg');
+  const form = document.getElementById('songForm');
+  const addCard = document.getElementById('addCard');
+  const shelfCount = document.getElementById('shelfCount');
+  const clearBtn = document.getElementById('clearBtn');
+
+  const viewer = document.getElementById('viewer');
+  const viewerTitle = document.getElementById('viewerTitle');
+  const viewerScore = document.getElementById('viewerScore');
+  const backBtn = document.getElementById('backBtn');
+  const fontControls = document.getElementById('fontControls');
+  const fontMinus = document.getElementById('fontMinus');
+  const fontPlus = document.getElementById('fontPlus');
+
+  const pdfNavBar = document.getElementById('pdfNavBar');
+  const prevPageBtn = document.getElementById('prevPageBtn');
+  const nextPageBtn = document.getElementById('nextPageBtn');
+  const pageIndicator = document.getElementById('pageIndicator');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomResetBtn = document.getElementById('zoomResetBtn');
+  const zoomIndicator = document.getElementById('zoomIndicator');
+  let currentPdfDoc = null;
+  let currentPdfPage = 1;
+  let pdfZoom = 1; // 1 = ajustado a pantalla; >1 = ampliado
+
+  if(window.pdfjsLib){
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
+  const typePdfBtn = document.getElementById('typePdfBtn');
+  const typeImageBtn = document.getElementById('typeImageBtn');
+  const typeTextBtn = document.getElementById('typeTextBtn');
+  const scoreFileInput = document.getElementById('scoreFile');
+  const scoreTextInput = document.getElementById('scoreText');
+  const fileHint = document.getElementById('fileHint');
+  let entryType = 'pdf';
+
+  function setEntryType(type){
+    entryType = type;
+    [typePdfBtn, typeImageBtn, typeTextBtn].forEach(btn => btn.classList.remove('active'));
+    if(type === 'pdf'){
+      typePdfBtn.classList.add('active');
+      scoreFileInput.style.display = '';
+      scoreFileInput.accept = 'application/pdf';
+      scoreTextInput.style.display = 'none';
+      fileHint.style.display = '';
+      fileHint.textContent = 'Un archivo PDF con la letra o partitura de la canción.';
+    } else if(type === 'image'){
+      typeImageBtn.classList.add('active');
+      scoreFileInput.style.display = '';
+      scoreFileInput.accept = 'image/*';
+      scoreTextInput.style.display = 'none';
+      fileHint.style.display = '';
+      fileHint.textContent = 'Una foto o imagen escaneada de la letra o partitura.';
+    } else {
+      typeTextBtn.classList.add('active');
+      scoreFileInput.style.display = 'none';
+      scoreTextInput.style.display = '';
+      fileHint.style.display = 'none';
+    }
+  }
+
+  typePdfBtn.addEventListener('click', () => setEntryType('pdf'));
+  typeImageBtn.addEventListener('click', () => setEntryType('image'));
+  typeTextBtn.addEventListener('click', () => setEntryType('text'));
+
+  const player = document.getElementById('player');
+  const playToggle = document.getElementById('playToggle');
+  const seek = document.getElementById('seek');
+  const curTime = document.getElementById('curTime');
+  const durTime = document.getElementById('durTime');
+
+  function fmtTime(s){
+    if(!isFinite(s)) return "0:00";
+    const m = Math.floor(s/60);
+    const sec = Math.floor(s%60).toString().padStart(2,'0');
+    return `${m}:${sec}`;
+  }
+
+  const searchInput = document.getElementById('searchInput');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const sortSelect = document.getElementById('sortSelect');
+  const categoryList = document.getElementById('categoryList');
+
+  const setlistCreator = document.getElementById('setlistCreator');
+  const setlistNameInput = document.getElementById('setlistName');
+  const setlistSongSearch = document.getElementById('setlistSongSearch');
+  const songPicker = document.getElementById('songPicker');
+  const pickerCount = document.getElementById('pickerCount');
+  const saveSetlistBtn = document.getElementById('saveSetlistBtn');
+  const setlistGrid = document.getElementById('setlistGrid');
+  const setlistEmptyMsg = document.getElementById('setlistEmptyMsg');
+
+  const setlistViewerOverlay = document.getElementById('setlistViewerOverlay');
+  const setlistViewerTitle = document.getElementById('setlistViewerTitle');
+  const setlistDetail = document.getElementById('setlistDetail');
+  const setlistBackBtn = document.getElementById('setlistBackBtn');
+  const deleteSetlistBtn = document.getElementById('deleteSetlistBtn');
+
+  const setlistContextBar = document.getElementById('setlistContextBar');
+  const setlistContextLabel = document.getElementById('setlistContextLabel');
+  const setlistPrevBtn = document.getElementById('setlistPrevBtn');
+  const setlistNextBtn = document.getElementById('setlistNextBtn');
+
+  let creationSelection = new Set(); // song ids chosen while creating a new setlist
+
+  function normalize(str){
+    return (str || '').toString().toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // quita acentos
+  }
+
+  function updateCategoryOptions(){
+    const cats = Array.from(new Set(
+      songs.map(s => (s.category || '').trim()).filter(Boolean)
+    )).sort((a,b) => a.localeCompare(b, 'es'));
+
+    const prevFilterVal = categoryFilter.value;
+    categoryFilter.innerHTML = '<option value="all">Todos los temas</option>';
+    cats.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      categoryFilter.appendChild(opt);
+    });
+    if(cats.includes(prevFilterVal)) categoryFilter.value = prevFilterVal;
+
+    categoryList.innerHTML = '';
+    cats.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      categoryList.appendChild(opt);
+    });
+  }
+
+  function getVisibleSongs(){
+    const q = normalize(searchInput.value.trim());
+    const cat = categoryFilter.value;
+    const sortMode = sortSelect.value;
+
+    let list = songs.filter(s => {
+      const matchesQuery = !q ||
+        normalize(s.title).includes(q) ||
+        normalize(s.category).includes(q);
+      const matchesCategory = cat === 'all' || (s.category || '') === cat;
+      return matchesQuery && matchesCategory;
+    });
+
+    list = list.slice().sort((a, b) => {
+      if(sortMode === 'az') return a.title.localeCompare(b.title, 'es');
+      if(sortMode === 'za') return b.title.localeCompare(a.title, 'es');
+      if(sortMode === 'category'){
+        const ca = a.category || 'Sin tema', cb = b.category || 'Sin tema';
+        return ca.localeCompare(cb, 'es') || a.title.localeCompare(b.title, 'es');
+      }
+      return (b.dateAdded || 0) - (a.dateAdded || 0); // recent first
+    });
+
+    return list;
+  }
+
+  function renderGrid(){
+    grid.querySelectorAll('.card, .no-results').forEach(c => c.remove());
+    updateCategoryOptions();
+
+    const visible = getVisibleSongs();
+    const hasFilters = searchInput.value.trim() || categoryFilter.value !== 'all';
+
+    emptyMsg.style.display = songs.length ? 'none' : 'block';
+    emptyMsg.textContent = 'Aún no has añadido ninguna canción. Usa "Añadir una canción" para empezar tu repertorio.';
+
+    shelfCount.textContent = songs.length
+      ? (hasFilters ? `Tu repertorio (${visible.length} de ${songs.length})` : `Tu repertorio (${songs.length})`)
+      : 'Tu repertorio';
+    clearBtn.style.display = songs.length ? 'inline-block' : 'none';
+
+    if(songs.length && !visible.length){
+      const noRes = document.createElement('div');
+      noRes.className = 'no-results';
+      noRes.textContent = 'Ninguna canción coincide con esa búsqueda.';
+      grid.appendChild(noRes);
+      return;
+    }
+
+    visible.forEach(song => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.tabIndex = 0;
+
+      const thumb = document.createElement('div');
+      thumb.className = 'card-thumb';
+      thumb.style.position = 'relative';
+
+      if(song.scoreType === 'image'){
+        const img = document.createElement('img');
+        img.src = song.scoreURL;
+        thumb.appendChild(img);
+      } else if(song.scoreType === 'pdf'){
+        const span = document.createElement('span');
+        span.className = 'pdf-icon';
+        span.textContent = 'PDF';
+        thumb.appendChild(span);
+      } else if(song.scoreType === 'text'){
+        const span = document.createElement('span');
+        span.className = 'txt-icon';
+        span.textContent = '✏️ Letra';
+        thumb.appendChild(span);
+      } else {
+        const span = document.createElement('span');
+        span.className = 'no-score';
+        span.textContent = 'Sin contenido';
+        thumb.appendChild(span);
+      }
+
+      const del = document.createElement('button');
+      del.className = 'card-delete';
+      del.innerHTML = '✕';
+      del.onclick = (e) => { e.stopPropagation(); deleteSong(song.id); };
+      thumb.appendChild(del);
+
+      const body = document.createElement('div');
+      body.className = 'card-body';
+      body.innerHTML = `<p class="card-title">${escapeHtml(song.title)}</p><p class="card-meta">TOCAR PARA VER Y ESCUCHAR</p>` +
+        (song.category ? `<span class="card-category">${escapeHtml(song.category)}</span>` : '');
+
+      card.appendChild(thumb);
+      card.appendChild(body);
+      card.onclick = () => openSong(song);
+
+      grid.appendChild(card);
+    });
+  }
+
+  searchInput.addEventListener('input', renderGrid);
+  setlistSongSearch.addEventListener('input', () => renderSongPicker(songPicker, setlistSongSearch.value, creationSelection, pickerCount, refreshCreationCount));
+  categoryFilter.addEventListener('change', renderGrid);
+  sortSelect.addEventListener('change', renderGrid);
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  async function deleteSong(id){
+    const idx = songs.findIndex(s => s.id === id);
+    if(idx > -1){
+      const [removed] = songs.splice(idx, 1);
+      if(removed.scoreURL) URL.revokeObjectURL(removed.scoreURL);
+      if(removed.audioURL) URL.revokeObjectURL(removed.audioURL);
+      renderGrid();
+      try{ await dbDelete(id); } catch(err){ console.error('Error al borrar', err); }
+      // Quita la canción de cualquier repertorio que la incluyera
+      let touched = false;
+      for(const sl of setlists){
+        const pos = sl.songIds.indexOf(id);
+        if(pos > -1){
+          sl.songIds.splice(pos, 1);
+          touched = true;
+          try{ await dbPutSetlist(sl); } catch(err){ console.error('Error al actualizar repertorio', err); }
+        }
+      }
+      if(touched) renderSetlistGrid();
+    }
+  }
+
+  clearBtn.addEventListener('click', async () => {
+    if(!confirm('¿Vaciar todo tu repertorio guardado en este dispositivo? Esta acción no se puede deshacer.')) return;
+    songs.forEach(s => {
+      if(s.scoreURL) URL.revokeObjectURL(s.scoreURL);
+      if(s.audioURL) URL.revokeObjectURL(s.audioURL);
+    });
+    songs = [];
+    renderGrid();
+    try{ await dbClear(); } catch(err){ console.error('Error al vaciar', err); }
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value.trim();
+    const audioInput = document.getElementById('audioFile');
+    const saveBtn = form.querySelector('.save-btn');
+
+    const audioFile = audioInput.files[0];
+    if(!title || !audioFile) return;
+
+    let scoreType, scoreBlob = null, scoreText = null;
+
+    if(entryType === 'text'){
+      scoreText = scoreTextInput.value.trim();
+      if(!scoreText){ alert('Escribe la letra o cambia a "Subir PDF" / "Subir imagen".'); return; }
+      scoreType = 'text';
+    } else {
+      const scoreFile = scoreFileInput.files[0];
+      if(!scoreFile){ alert('Selecciona un archivo o cambia a "Escribir texto".'); return; }
+      if(entryType === 'pdf' && scoreFile.type !== 'application/pdf'){
+        alert('Ese archivo no es un PDF. Selecciona un PDF o cambia a "Subir imagen".'); return;
+      }
+      scoreBlob = scoreFile;
+      scoreType = entryType === 'pdf' ? 'pdf' : 'image';
+    }
+
+    const record = {
+      id: Date.now() + Math.random(),
+      title,
+      category,
+      scoreType,
+      scoreBlob,
+      scoreText,
+      audioBlob: audioFile,
+      dateAdded: Date.now()
+    };
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando…';
+    try{
+      await dbPut(record);
+      const song = {
+        ...record,
+        scoreURL: record.scoreBlob ? URL.createObjectURL(record.scoreBlob) : null,
+        audioURL: URL.createObjectURL(record.audioBlob)
+      };
+      songs.unshift(song);
+      renderGrid();
+      form.reset();
+      setEntryType('pdf');
+      addCard.removeAttribute('open');
+    } catch(err){
+      console.error(err);
+      alert('No se pudo guardar la canción en este dispositivo. Puede que el archivo sea demasiado grande o que el navegador esté en modo privado.');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Guardar en el atril';
+    }
+  });
+
+  async function loadFromDB(){
+    try{
+      const records = await dbGetAll();
+      records.sort((a, b) => (b.dateAdded || 0) - (a.dateAdded || 0));
+      songs = records.map(r => ({
+        ...r,
+        scoreURL: r.scoreBlob ? URL.createObjectURL(r.scoreBlob) : null,
+        audioURL: URL.createObjectURL(r.audioBlob)
+      }));
+    } catch(err){
+      console.error('Error al cargar el repertorio', err);
+      emptyMsg.textContent = 'No se pudo cargar el repertorio guardado en este dispositivo.';
+    }
+    renderGrid();
+  }
+
+  async function loadSetlistsFromDB(){
+    try{
+      const records = await dbGetAllSetlists();
+      records.sort((a, b) => (b.dateCreated || 0) - (a.dateCreated || 0));
+      setlists = records;
+    } catch(err){
+      console.error('Error al cargar los repertorios', err);
+    }
+    renderSetlistGrid();
+  }
+
+  // ---- Song picker: reusable checklist used both when creating a setlist
+  // and when adding more songs to an existing one ----
+  function renderSongPicker(container, query, selectedSet, countLabelEl, onToggle){
+    container.innerHTML = '';
+    const q = normalize((query || '').trim());
+    const list = songs.filter(s => !q || normalize(s.title).includes(q) || normalize(s.category).includes(q));
+
+    if(!songs.length){
+      container.innerHTML = '<p class="picker-empty">Primero añade canciones a tu biblioteca.</p>';
+    } else if(!list.length){
+      container.innerHTML = '<p class="picker-empty">Ninguna canción coincide con esa búsqueda.</p>';
+    } else {
+      list.forEach(song => {
+        const row = document.createElement('label');
+        row.className = 'picker-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = selectedSet.has(song.id);
+        cb.onchange = () => {
+          if(cb.checked) selectedSet.add(song.id); else selectedSet.delete(song.id);
+          if(onToggle) onToggle(song.id, cb.checked);
+        };
+        const text = document.createElement('span');
+        text.className = 'picker-item-text';
+        text.innerHTML = `<span class="picker-item-title">${escapeHtml(song.title)}</span>` +
+          (song.category ? `<br><span class="picker-item-meta">${escapeHtml(song.category)}</span>` : '');
+        row.appendChild(cb);
+        row.appendChild(text);
+        container.appendChild(row);
+      });
+    }
+
+    if(countLabelEl) refreshPickerCount(countLabelEl, selectedSet);
+  }
+
+  function refreshPickerCount(el, selectedSet){
+    const n = selectedSet.size;
+    el.textContent = n === 0 ? '0 canciones seleccionadas' :
+      (n === 1 ? '1 canción seleccionada' : `${n} canciones seleccionadas`);
+  }
+
+  function refreshCreationCount(){
+    refreshPickerCount(pickerCount, creationSelection);
+  }
+
+  setlistCreator.addEventListener('toggle', () => {
+    if(setlistCreator.open) renderSongPicker(songPicker, setlistSongSearch.value, creationSelection, pickerCount, refreshCreationCount);
+  });
+
+  saveSetlistBtn.addEventListener('click', async () => {
+    const name = setlistNameInput.value.trim();
+    if(!name){ alert('Ponle un nombre al repertorio, por ejemplo el tipo de actuación.'); return; }
+    if(!creationSelection.size){ alert('Selecciona al menos una canción de tu biblioteca.'); return; }
+
+    const record = {
+      id: Date.now() + Math.random(),
+      name,
+      songIds: Array.from(creationSelection),
+      dateCreated: Date.now()
+    };
+    saveSetlistBtn.disabled = true;
+    saveSetlistBtn.textContent = 'Guardando…';
+    try{
+      await dbPutSetlist(record);
+      setlists.unshift(record);
+      renderSetlistGrid();
+      setlistNameInput.value = '';
+      setlistSongSearch.value = '';
+      creationSelection = new Set();
+      renderSongPicker(songPicker, '', creationSelection, pickerCount, refreshCreationCount);
+      setlistCreator.removeAttribute('open');
+    } catch(err){
+      console.error(err);
+      alert('No se pudo guardar el repertorio en este dispositivo.');
+    } finally {
+      saveSetlistBtn.disabled = false;
+      saveSetlistBtn.textContent = 'Guardar repertorio';
+    }
+  });
+
+  function songTitleById(id){
+    const s = songs.find(sg => sg.id === id);
+    return s ? s : null;
+  }
+
+  function renderSetlistGrid(){
+    setlistGrid.querySelectorAll('.setlist-card').forEach(c => c.remove());
+    setlistEmptyMsg.style.display = setlists.length ? 'none' : 'block';
+
+    setlists.forEach(sl => {
+      const validSongs = sl.songIds.map(songTitleById).filter(Boolean);
+      const cats = Array.from(new Set(validSongs.map(s => s.category).filter(Boolean))).slice(0, 4);
+
+      const card = document.createElement('div');
+      card.className = 'setlist-card';
+      card.tabIndex = 0;
+      card.innerHTML = `
+        <span class="setlist-card-icon">🎤</span>
+        <p class="setlist-card-title">${escapeHtml(sl.name)}</p>
+        <p class="setlist-card-meta">${validSongs.length} ${validSongs.length === 1 ? 'CANCIÓN' : 'CANCIONES'}</p>
+        <div class="setlist-card-chips">${cats.map(c => `<span class="setlist-chip">${escapeHtml(c)}</span>`).join('')}</div>
+      `;
+      card.onclick = () => openSetlistDetail(sl.id);
+      setlistGrid.appendChild(card);
+    });
+  }
+
+  function openSetlistDetail(id){
+    openSetlistDetailId = id;
+    renderSetlistDetail();
+    setlistViewerOverlay.classList.add('open');
+  }
+
+  function renderSetlistDetail(){
+    const sl = setlists.find(s => s.id === openSetlistDetailId);
+    if(!sl){ setlistViewerOverlay.classList.remove('open'); return; }
+
+    setlistViewerTitle.textContent = sl.name;
+    setlistDetail.innerHTML = '';
+
+    const header = document.createElement('div');
+    header.className = 'setlist-detail-header';
+    const playBtn = document.createElement('button');
+    playBtn.className = 'save-btn';
+    playBtn.style.marginTop = '0';
+    playBtn.textContent = '▶ Reproducir repertorio';
+    playBtn.disabled = !sl.songIds.some(id => songTitleById(id));
+    playBtn.onclick = () => {
+      const firstIdx = sl.songIds.findIndex(id => songTitleById(id));
+      if(firstIdx === -1) return;
+      setlistViewerOverlay.classList.remove('open');
+      openSong(songTitleById(sl.songIds[firstIdx]), { setlist: sl, index: firstIdx });
+    };
+    header.appendChild(playBtn);
+    setlistDetail.appendChild(header);
+
+    if(!sl.songIds.length){
+      const empty = document.createElement('div');
+      empty.className = 'setlist-empty-detail';
+      empty.textContent = 'Este repertorio aún no tiene canciones. Añádelas abajo.';
+      setlistDetail.appendChild(empty);
+    }
+
+    sl.songIds.forEach((songId, idx) => {
+      const song = songTitleById(songId);
+      const row = document.createElement('div');
+      row.className = 'setlist-song-row';
+
+      if(!song){
+        row.innerHTML = `<span class="setlist-song-index">${idx+1}</span><div class="setlist-song-info"><span class="setlist-song-title" style="color:var(--muted);">Canción eliminada de la biblioteca</span></div>`;
+        const rm = document.createElement('button');
+        rm.className = 'row-btn danger';
+        rm.textContent = '✕';
+        rm.onclick = () => removeSongFromSetlist(sl, idx);
+        row.appendChild(rm);
+        setlistDetail.appendChild(row);
+        return;
+      }
+
+      const idxSpan = document.createElement('span');
+      idxSpan.className = 'setlist-song-index';
+      idxSpan.textContent = idx + 1;
+
+      const info = document.createElement('div');
+      info.className = 'setlist-song-info';
+      info.innerHTML = `<div class="setlist-song-title">${escapeHtml(song.title)}</div>` +
+        (song.category ? `<div class="setlist-song-cat">${escapeHtml(song.category)}</div>` : '');
+      info.onclick = () => {
+        setlistViewerOverlay.classList.remove('open');
+        openSong(song, { setlist: sl, index: idx }, false);
+      };
+
+      const upBtn = document.createElement('button');
+      upBtn.className = 'row-btn';
+      upBtn.textContent = '↑';
+      upBtn.disabled = idx === 0;
+      upBtn.onclick = () => reorderSetlistSong(sl, idx, idx - 1);
+
+      const downBtn = document.createElement('button');
+      downBtn.className = 'row-btn';
+      downBtn.textContent = '↓';
+      downBtn.disabled = idx === sl.songIds.length - 1;
+      downBtn.onclick = () => reorderSetlistSong(sl, idx, idx + 1);
+
+      const playRowBtn = document.createElement('button');
+      playRowBtn.className = 'row-btn row-play';
+      playRowBtn.textContent = '▶';
+      playRowBtn.onclick = () => {
+        setlistViewerOverlay.classList.remove('open');
+        openSong(song, { setlist: sl, index: idx });
+      };
+
+      const rmBtn = document.createElement('button');
+      rmBtn.className = 'row-btn danger';
+      rmBtn.textContent = '✕';
+      rmBtn.onclick = () => removeSongFromSetlist(sl, idx);
+
+      row.appendChild(idxSpan);
+      row.appendChild(info);
+      row.appendChild(upBtn);
+      row.appendChild(downBtn);
+      row.appendChild(playRowBtn);
+      row.appendChild(rmBtn);
+      setlistDetail.appendChild(row);
+    });
+
+    const addMore = document.createElement('details');
+    addMore.className = 'add-songs-toggle';
+    const summary = document.createElement('summary');
+    summary.textContent = '+ Añadir canciones a este repertorio';
+    const search = document.createElement('input');
+    search.type = 'search';
+    search.className = 'search-input';
+    search.placeholder = 'Buscar canciones…';
+    search.style.cssText = 'margin-bottom:10px; color:var(--text-dark); background:#fff; border:1.5px solid var(--paper-shadow); width:100%;';
+    const pickerWrap = document.createElement('div');
+    pickerWrap.className = 'song-picker';
+
+    const inSetSet = new Set(sl.songIds);
+    const addToggle = (songId, checked) => {
+      if(checked){
+        if(!sl.songIds.includes(songId)) sl.songIds.push(songId);
+      } else {
+        const p = sl.songIds.indexOf(songId);
+        if(p > -1) sl.songIds.splice(p, 1);
+      }
+      persistSetlist(sl).then(() => renderSetlistDetail());
+    };
+    renderSongPicker(pickerWrap, '', inSetSet, null, addToggle);
+    search.addEventListener('input', () => renderSongPicker(pickerWrap, search.value, inSetSet, null, addToggle));
+
+    addMore.appendChild(summary);
+    addMore.appendChild(search);
+    addMore.appendChild(pickerWrap);
+    setlistDetail.appendChild(addMore);
+  }
+
+  function reorderSetlistSong(sl, from, to){
+    if(to < 0 || to >= sl.songIds.length) return;
+    const [moved] = sl.songIds.splice(from, 1);
+    sl.songIds.splice(to, 0, moved);
+    persistSetlist(sl).then(() => renderSetlistDetail());
+  }
+
+  function removeSongFromSetlist(sl, idx){
+    sl.songIds.splice(idx, 1);
+    persistSetlist(sl).then(() => { renderSetlistDetail(); renderSetlistGrid(); });
+  }
+
+  async function persistSetlist(sl){
+    try{ await dbPutSetlist(sl); } catch(err){ console.error('Error al guardar repertorio', err); }
+    renderSetlistGrid();
+  }
+
+  setlistBackBtn.addEventListener('click', () => {
+    setlistViewerOverlay.classList.remove('open');
+    openSetlistDetailId = null;
+  });
+
+  deleteSetlistBtn.addEventListener('click', async () => {
+    const sl = setlists.find(s => s.id === openSetlistDetailId);
+    if(!sl) return;
+    if(!confirm(`¿Eliminar el repertorio "${sl.name}"? Las canciones seguirán en tu biblioteca.`)) return;
+    try{ await dbDeleteSetlist(sl.id); } catch(err){ console.error(err); }
+    setlists = setlists.filter(s => s.id !== sl.id);
+    setlistViewerOverlay.classList.remove('open');
+    openSetlistDetailId = null;
+    renderSetlistGrid();
+  });
+
+  // ---- Modo pantalla completa del PDF: controles ocultos, páginas con toque o deslizando ----
+  const chromeTop = document.getElementById('chromeTop');
+  const chromeBottom = document.getElementById('chromeBottom');
+  const pageBadge = document.getElementById('pageBadge');
+  const gestureHint = document.getElementById('gestureHint');
+  let controlsTimer = null;
+  let hintShown = false;
+
+  function showControls(ms){
+    viewer.classList.add('controls-visible');
+    clearTimeout(controlsTimer);
+    controlsTimer = setTimeout(() => viewer.classList.remove('controls-visible'), ms);
+  }
+  function hideControls(){
+    clearTimeout(controlsTimer);
+    viewer.classList.remove('controls-visible');
+  }
+  function toggleControls(){
+    if(viewer.classList.contains('controls-visible')) hideControls();
+    else showControls(6000);
+  }
+  // Mientras se usan los controles, no se ocultan de golpe
+  function keepControls(){
+    if(viewer.classList.contains('controls-visible') && viewer.classList.contains('immersive')) showControls(6000);
+  }
+  ['pointerdown', 'input', 'click'].forEach(ev => {
+    chromeTop.addEventListener(ev, keepControls);
+    chromeBottom.addEventListener(ev, keepControls);
+  });
+
+  function enterImmersive(){
+    viewer.classList.add('immersive');
+    showControls(3000); // se ven un momento al abrir, para saber que existen
+    if(!hintShown){
+      hintShown = true;
+      setTimeout(() => {
+        if(!viewer.classList.contains('immersive') || viewer.classList.contains('controls-visible')) return;
+        gestureHint.classList.add('show');
+        setTimeout(() => gestureHint.classList.remove('show'), 4500);
+      }, 3300);
+    }
+  }
+  function exitImmersive(){
+    viewer.classList.remove('immersive', 'controls-visible');
+    clearTimeout(controlsTimer);
+    pageBadge.classList.remove('on');
+    gestureHint.classList.remove('show');
+  }
+
+  function goPage(delta){
+    if(!currentPdfDoc) return;
+    const target = currentPdfPage + delta;
+    if(target < 1 || target > currentPdfDoc.numPages) return;
+    // La página nueva se ve completa, sin zoom (si quieres, vuelves a ampliarla)
+    if(pdfZoom !== 1){ pdfZoom = 1; zoomIndicator.textContent = '100%'; }
+    renderPdfPage(target);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if(!viewer.classList.contains('open') || !currentPdfDoc) return;
+    if(e.key === 'ArrowRight' || e.key === 'PageDown') goPage(1);
+    else if(e.key === 'ArrowLeft' || e.key === 'PageUp') goPage(-1);
+  });
+
+  // ---- Imágenes y textos escritos se muestran igual que un PDF: como "páginas" ----
+  const TEXT_FAMILY = "'Fraunces', Georgia, 'Times New Roman', serif";
+  let textFontSize = 34;     // tamaño de letra (en unidades de página) de los textos escritos
+  let currentDocKind = null; // 'pdf' | 'image' | 'text'
+
+  async function waitForFonts(){
+    try{
+      if(document.fonts && document.fonts.load){
+        await Promise.race([document.fonts.load('34px Fraunces'), new Promise(r => setTimeout(r, 1500))]);
+      }
+    } catch(e){}
+  }
+
+  function loadImage(url){
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = url;
+    });
+  }
+
+  async function makeImageDoc(url){
+    const im = await loadImage(url);
+    const W = im.naturalWidth || im.width;
+    const H = im.naturalHeight || im.height;
+    return {
+      numPages: 1,
+      getPage: async () => ({
+        getViewport: ({ scale }) => ({ width: W * scale, height: H * scale, scale }),
+        render: ({ canvasContext: ctx, viewport }) => {
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, viewport.width, viewport.height);
+          ctx.drawImage(im, 0, 0, viewport.width, viewport.height);
+          return { promise: Promise.resolve(), cancel(){} };
+        }
+      })
+    };
+  }
+
+  function makeTextDoc(text, fontSize){
+    const PW = 800, PH = 1131, M = 72;          // página con proporción A4
+    const lineH = Math.round(fontSize * 1.5);
+    const meas = document.createElement('canvas').getContext('2d');
+    meas.font = `${fontSize}px ${TEXT_FAMILY}`;
+    const maxW = PW - 2 * M;
+
+    const lines = [];
+    String(text).replace(/\r\n?/g, '\n').split('\n').forEach(par => {
+      if(!par.trim()){ lines.push(''); return; }
+      let cur = '';
+      par.trim().split(/\s+/).forEach(word => {
+        const test = cur ? cur + ' ' + word : word;
+        if(meas.measureText(test).width <= maxW){ cur = test; }
+        else { if(cur) lines.push(cur); cur = word; }
+      });
+      if(cur) lines.push(cur);
+    });
+
+    const perPage = Math.max(1, Math.floor((PH - 2 * M) / lineH));
+    const pages = [];
+    let i = 0;
+    while(i < lines.length){
+      while(i < lines.length && lines[i] === '' && pages.length) i++; // sin líneas en blanco al inicio de página
+      if(i >= lines.length) break;
+      pages.push({ start: i, lines: lines.slice(i, i + perPage) });
+      i += perPage;
+    }
+    if(!pages.length) pages.push({ start: 0, lines: [''] });
+
+    return {
+      numPages: pages.length,
+      pages,
+      getPage: async (n) => ({
+        getViewport: ({ scale }) => ({ width: PW * scale, height: PH * scale, scale }),
+        render: ({ canvasContext: ctx, viewport }) => {
+          ctx.save();
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(0, 0, viewport.width, viewport.height);
+          ctx.scale(viewport.scale, viewport.scale);
+          ctx.fillStyle = '#22242B';
+          ctx.font = `${fontSize}px ${TEXT_FAMILY}`;
+          ctx.textBaseline = 'top';
+          pages[n - 1].lines.forEach((ln, k) => ctx.fillText(ln, M, M + k * lineH));
+          ctx.restore();
+          return { promise: Promise.resolve(), cancel(){} };
+        }
+      })
+    };
+  }
+
+  function changeTextSize(delta){
+    if(currentDocKind !== 'text' || !currentSong || !currentPdfDoc || !currentPdfDoc.pages) return;
+    const next = Math.min(Math.max(textFontSize + delta, 22), 64);
+    if(next === textFontSize) return;
+    const startLine = currentPdfDoc.pages[Math.max(currentPdfPage, 1) - 1].start; // para no perder el sitio
+    textFontSize = next;
+    const newDoc = makeTextDoc(currentSong.scoreText || '', textFontSize);
+    let idx = 0;
+    newDoc.pages.forEach((pg, k) => { if(pg.start <= startLine) idx = k; });
+    currentPdfDoc = newDoc;
+    renderPdfPage(idx + 1);
+  }
+
+  async function loadAndRenderDocument(song){
+    viewerScore.classList.add('pdf-mode');
+    pdfNavBar.style.display = 'flex';
+    pageIndicator.textContent = 'Cargando…';
+    pageBadge.classList.remove('on');
+    prevPageBtn.disabled = true;
+    nextPageBtn.disabled = true;
+    pdfZoom = 1;
+    zoomIndicator.textContent = '100%';
+
+    viewerScore.innerHTML = `
+      <div class="pdf-canvas-wrap" id="pdfCanvasWrap">
+        <canvas id="pdfCanvas"></canvas>
+      </div>`;
+
+    const wrap = document.getElementById('pdfCanvasWrap');
+
+    let startX = 0, startY = 0;
+    let startScrollLeft = 0, startAtLeft = true, startAtRight = true;
+    let pinchStartDist = null;
+    let pinchStartZoom = 1;
+    let multiTouch = false;
+    let ignoreClick = false;
+    const markIgnoreClick = () => { ignoreClick = true; setTimeout(() => { ignoreClick = false; }, 350); };
+
+    function touchDistance(touches){
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    wrap.addEventListener('touchstart', (e) => {
+      if(e.touches.length === 2){
+        pinchStartDist = touchDistance(e.touches);
+        pinchStartZoom = pdfZoom;
+        multiTouch = true;
+      } else if(e.touches.length === 1){
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        // ¿La página ampliada estaba ya en un borde? (para saber si deslizar debe pasar de página)
+        startScrollLeft = wrap.scrollLeft;
+        startAtLeft = wrap.scrollLeft <= 2;
+        startAtRight = wrap.scrollLeft >= wrap.scrollWidth - wrap.clientWidth - 2;
+        multiTouch = false;
+      }
+    }, { passive:true });
+
+    wrap.addEventListener('touchmove', (e) => {
+      if(e.touches.length === 2 && pinchStartDist){
+        const ratio = touchDistance(e.touches) / pinchStartDist;
+        setZoom(pinchStartZoom * ratio, false);
+      }
+    }, { passive:true });
+
+    wrap.addEventListener('touchend', (e) => {
+      if(pinchStartDist){
+        pinchStartDist = null;
+        markIgnoreClick();
+        renderPdfPage(currentPdfPage); // render nítido al soltar
+        return;
+      }
+      if(multiTouch){
+        if(e.touches.length === 0) multiTouch = false;
+        markIgnoreClick();
+        return;
+      }
+      const t = e.changedTouches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4){
+        if(pdfZoom > 1){
+          // Ampliado, el dedo mueve la página. Solo se pasa de página si ya estaba en el borde
+          // y la página no se pudo mover más en esa dirección.
+          const moved = wrap.scrollLeft - startScrollLeft;
+          const canTurn = dx < 0 ? (startAtRight && moved >= -2) : (startAtLeft && moved <= 2);
+          if(!canTurn) return;
+        }
+        markIgnoreClick();
+        goPage(dx < 0 ? 1 : -1); // izquierda = avanzar, derecha = retroceder
+      }
+    }, { passive:true });
+
+    // Toque: lado izquierdo = página anterior, lado derecho = siguiente, centro = controles
+    wrap.addEventListener('click', (e) => {
+      if(ignoreClick){ ignoreClick = false; return; }
+      if(!currentPdfDoc || currentPdfDoc.numPages < 2){ toggleControls(); return; }
+      const rect = wrap.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      if(x < 0.3) goPage(-1);
+      else if(x > 0.7) goPage(1);
+      else toggleControls();
+    });
+
+    try{
+      let doc;
+      if(song.scoreType === 'pdf'){
+        const arrayBuffer = await song.scoreBlob.arrayBuffer();
+        doc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      } else if(song.scoreType === 'image'){
+        doc = await makeImageDoc(song.scoreURL);
+      } else {
+        await waitForFonts();
+        doc = makeTextDoc(song.scoreText || '', textFontSize);
+      }
+      if(currentSong !== song) return; // mientras tanto se cerró o se abrió otra canción
+      currentPdfDoc = doc;
+      currentPdfPage = 0;
+      await renderPdfPage(1);
+    } catch(err){
+      console.error('Error al abrir el documento', err);
+      pageIndicator.textContent = '';
+      viewerScore.innerHTML = song.scoreType === 'pdf'
+        ? '<p class="no-file-msg">No se pudo abrir este PDF. Comprueba la conexión a internet: el visor de PDF se descarga la primera vez.</p>'
+        : '<p class="no-file-msg">No se pudo abrir este archivo.</p>';
+    }
+  }
+
+  function setZoom(newZoom, rerender = true){
+    pdfZoom = Math.min(Math.max(newZoom, 1), 4);
+    if(pdfZoom < 1.05) pdfZoom = 1;
+    zoomIndicator.textContent = Math.round(pdfZoom * 100) + '%';
+    const canvas = document.getElementById('pdfCanvas');
+    if(canvas && !rerender){
+      // vista previa rápida mientras se pellizca, sin volver a dibujar la página
+      canvas.style.transform = `scale(${pdfZoom / (canvas.dataset.renderedZoom || 1)})`;
+      canvas.style.transformOrigin = 'center';
+    }
+    if(rerender) renderPdfPage(currentPdfPage);
+  }
+
+  zoomInBtn.addEventListener('click', () => setZoom(pdfZoom + 0.25));
+  zoomOutBtn.addEventListener('click', () => setZoom(pdfZoom - 0.25));
+  zoomResetBtn.addEventListener('click', () => setZoom(1));
+
+  let renderTask = null;
+  let renderSeq = 0;
+  const MAX_CANVAS_PIXELS = 16000000; // límite seguro para iPad/iPhone
+
+  async function renderPdfPage(num){
+    if(!currentPdfDoc) return;
+    const doc = currentPdfDoc;
+    num = Math.min(Math.max(num, 1), doc.numPages);
+    const previousPage = currentPdfPage;
+    currentPdfPage = num;
+    pageIndicator.textContent = `Página ${num} de ${doc.numPages}`;
+    prevPageBtn.disabled = num <= 1;
+    nextPageBtn.disabled = num >= doc.numPages;
+    pageBadge.textContent = `${num} / ${doc.numPages}`;
+    pageBadge.classList.toggle('on', doc.numPages > 1);
+
+    // Si había un dibujo en curso (toques rápidos), se cancela antes de empezar otro
+    const seq = ++renderSeq;
+    if(renderTask){
+      try{ renderTask.cancel(); }catch(e){}
+      try{ await renderTask.promise; }catch(e){}
+      renderTask = null;
+    }
+    if(seq !== renderSeq || doc !== currentPdfDoc) return;
+
+    const page = await doc.getPage(num);
+    if(seq !== renderSeq || doc !== currentPdfDoc) return;
+    const wrap = document.getElementById('pdfCanvasWrap');
+    const canvas = document.getElementById('pdfCanvas');
+    if(!wrap || !canvas) return;
+
+    // Qué punto de la página está ahora en el centro de la pantalla (para mantenerlo al cambiar el zoom)
+    let fx = 0.5, fy = 0.5;
+    if(wrap.classList.contains('zoomed') && wrap.scrollWidth > 0 && wrap.scrollHeight > 0){
+      fx = (wrap.scrollLeft + wrap.clientWidth / 2) / wrap.scrollWidth;
+      fy = (wrap.scrollTop + wrap.clientHeight / 2) / wrap.scrollHeight;
+    }
+    if(num !== previousPage) fy = 0; // página nueva: se empieza por arriba
+
+    const availW = wrap.clientWidth - 20;
+    const availH = wrap.clientHeight - 20;
+    const baseViewport = page.getViewport({ scale: 1 });
+    const fitScale = Math.min(availW / baseViewport.width, availH / baseViewport.height);
+    const cssScale = fitScale * pdfZoom;
+    const cssW = baseViewport.width * cssScale;
+    const cssH = baseViewport.height * cssScale;
+    let outputScale = window.devicePixelRatio || 1;
+    outputScale = Math.max(0.5, Math.min(outputScale, Math.sqrt(MAX_CANVAS_PIXELS / (cssW * cssH))));
+    const viewport = page.getViewport({ scale: cssScale * outputScale });
+
+    wrap.classList.toggle('zoomed', pdfZoom > 1);
+    canvas.style.transform = 'none';
+    canvas.width = Math.round(viewport.width);
+    canvas.height = Math.round(viewport.height);
+    canvas.style.width = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    canvas.dataset.renderedZoom = pdfZoom;
+
+    // Con zoom: la página queda centrada en pantalla (y se mantiene el punto que se estaba mirando)
+    if(pdfZoom > 1){
+      wrap.scrollLeft = Math.max(0, fx * wrap.scrollWidth - wrap.clientWidth / 2);
+      wrap.scrollTop = Math.max(0, fy * wrap.scrollHeight - wrap.clientHeight / 2);
+    } else {
+      wrap.scrollLeft = 0;
+      wrap.scrollTop = 0;
+    }
+
+    const task = page.render({ canvasContext: canvas.getContext('2d'), viewport });
+    renderTask = task;
+    try{
+      await task.promise;
+    } catch(err){
+      if(err && err.name === 'RenderingCancelledException') return;
+      console.error('Error al dibujar la página', err);
+    }
+    if(renderTask === task) renderTask = null;
+  }
+
+  prevPageBtn.addEventListener('click', () => goPage(-1));
+  nextPageBtn.addEventListener('click', () => goPage(1));
+
+  window.addEventListener('resize', () => {
+    if(currentPdfDoc && viewer.classList.contains('open')) renderPdfPage(currentPdfPage);
+  });
+
+  function openSong(song, context, autoplay = true){
+    currentSong = song;
+    activeSetlist = context ? context.setlist : null;
+    activeSetlistIndex = context ? context.index : -1;
+    updateSetlistContextBar();
+    viewerTitle.textContent = song.title;
+    viewerScore.innerHTML = '';
+    viewerScore.classList.remove('pdf-mode');
+    pdfNavBar.style.display = 'none';
+    currentPdfDoc = null;
+    currentDocKind = null;
+    exitImmersive();
+
+    // PDF, imagen y texto escrito se ven igual: pantalla completa, toque/deslizar para pasar página, zoom
+    fontControls.style.display = song.scoreType === 'text' ? 'flex' : 'none';
+    currentDocKind = song.scoreType;
+    enterImmersive();
+    loadAndRenderDocument(song);
+
+    player.src = song.audioURL;
+    viewer.classList.add('open');
+    player.currentTime = 0;
+
+    if(autoplay){
+      const playPromise = player.play();
+      if(playPromise !== undefined){
+        playPromise.then(() => {
+          playToggle.textContent = '❚❚';
+        }).catch(() => {
+          playToggle.textContent = '▶';
+        });
+      }
+    } else {
+      player.pause();
+      playToggle.textContent = '▶';
+    }
+  }
+
+  function updateSetlistContextBar(){
+    if(!activeSetlist){
+      setlistContextBar.classList.remove('open');
+      return;
+    }
+    const total = activeSetlist.songIds.length;
+    setlistContextLabel.textContent = `${activeSetlist.name} — ${activeSetlistIndex + 1} de ${total}`;
+    setlistPrevBtn.disabled = activeSetlistIndex <= 0;
+    setlistNextBtn.disabled = activeSetlistIndex >= total - 1;
+    setlistContextBar.classList.add('open');
+  }
+
+  function goToSetlistOffset(offset){
+    if(!activeSetlist) return;
+    let idx = activeSetlistIndex + offset;
+    // Salta cualquier canción que haya sido eliminada de la biblioteca
+    while(idx >= 0 && idx < activeSetlist.songIds.length && !songTitleById(activeSetlist.songIds[idx])){
+      idx += offset;
+    }
+    if(idx < 0 || idx >= activeSetlist.songIds.length) return;
+    const song = songTitleById(activeSetlist.songIds[idx]);
+    // Al pasar de canción dentro de un repertorio, se muestra la letra
+    // pero NO se reproduce sola — el usuario decide cuándo dar a play.
+    if(song) openSong(song, { setlist: activeSetlist, index: idx }, false);
+  }
+
+  setlistPrevBtn.addEventListener('click', () => goToSetlistOffset(-1));
+  setlistNextBtn.addEventListener('click', () => goToSetlistOffset(1));
+
+  fontMinus.addEventListener('click', () => changeTextSize(-4));
+  fontPlus.addEventListener('click', () => changeTextSize(4));
+
+  backBtn.addEventListener('click', () => {
+    player.pause();
+    viewer.classList.remove('open');
+    currentSong = null;
+    currentPdfDoc = null;
+    pdfNavBar.style.display = 'none';
+    viewerScore.classList.remove('pdf-mode');
+    exitImmersive();
+    activeSetlist = null;
+    activeSetlistIndex = -1;
+    setlistContextBar.classList.remove('open');
+  });
+
+  playToggle.addEventListener('click', () => {
+    if(player.paused){
+      player.play();
+      playToggle.textContent = '❚❚';
+    } else {
+      player.pause();
+      playToggle.textContent = '▶';
+    }
+  });
+
+  player.addEventListener('timeupdate', () => {
+    if(player.duration){
+      seek.max = player.duration;
+      seek.value = player.currentTime;
+      curTime.textContent = fmtTime(player.currentTime);
+      durTime.textContent = fmtTime(player.duration);
+    }
+  });
+
+  player.addEventListener('loadedmetadata', () => {
+    seek.max = player.duration;
+    durTime.textContent = fmtTime(player.duration);
+  });
+
+  player.addEventListener('ended', () => {
+    playToggle.textContent = '▶';
+    // Ya no se avanza sola a la siguiente canción del repertorio:
+    // el usuario decide cuándo pasar y cuándo dar a play.
+  });
+
+  seek.addEventListener('input', () => {
+    player.currentTime = seek.value;
+  });
+
+  loadFromDB();
+  loadSetlistsFromDB();
+
+  /* ---------------------------------------------------------
+     Base de datos portátil: exporta/importa TODO tu repertorio
+     (metadatos + letras/partituras + audios) como un único
+     archivo .json que puedes guardar en Archivos, iCloud, Drive.
+  --------------------------------------------------------- */
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importInput = document.getElementById('importInput');
+  const dbStatus = document.getElementById('dbStatus');
+
+  function blobToDataURL(blob){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function dataURLToBlob(dataURL){
+    const res = await fetch(dataURL);
+    return res.blob();
+  }
+
+  exportBtn.addEventListener('click', async () => {
+    if(!songs.length && !setlists.length){
+      dbStatus.textContent = 'Tu repertorio está vacío, no hay nada que exportar todavía.';
+      return;
+    }
+    dbStatus.textContent = 'Preparando el archivo de base de datos…';
+    try{
+      const records = await dbGetAll();
+      const exportData = [];
+      for(const r of records){
+        exportData.push({
+          id: r.id,
+          title: r.title,
+          category: r.category || '',
+          scoreType: r.scoreType,
+          scoreMime: r.scoreBlob ? r.scoreBlob.type : null,
+          audioMime: r.audioBlob.type,
+          scoreData: r.scoreBlob ? await blobToDataURL(r.scoreBlob) : null,
+          scoreText: r.scoreType === 'text' ? (r.scoreText || '') : null,
+          audioData: await blobToDataURL(r.audioBlob),
+          dateAdded: r.dateAdded
+        });
+      }
+      const setlistRecords = await dbGetAllSetlists();
+      const exportSetlists = setlistRecords.map(sl => ({
+        id: sl.id,
+        name: sl.name,
+        songIds: sl.songIds,
+        dateCreated: sl.dateCreated
+      }));
+      const payload = {
+        app: 'Atril Digital',
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        songs: exportData,
+        setlists: exportSetlists
+      };
+      const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const stamp = new Date().toISOString().slice(0,10);
+      a.download = `atril-digital-db-${stamp}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      dbStatus.textContent = `Archivo generado con ${exportData.length} canción(es) y ${exportSetlists.length} repertorio(s). Guárdalo en un lugar seguro de tu dispositivo.`;
+    } catch(err){
+      console.error(err);
+      dbStatus.textContent = 'No se pudo generar el archivo. Inténtalo de nuevo.';
+    }
+  });
+
+  importBtn.addEventListener('click', () => importInput.click());
+
+  importInput.addEventListener('change', async () => {
+    const file = importInput.files[0];
+    if(!file) return;
+    dbStatus.textContent = 'Leyendo base de datos…';
+    try{
+      const text = await file.text();
+      const payload = JSON.parse(text);
+      if(!payload.songs || !Array.isArray(payload.songs)){
+        throw new Error('Formato de archivo no reconocido');
+      }
+      let count = 0;
+      for(const s of payload.songs){
+        const scoreBlob = s.scoreData ? await dataURLToBlob(s.scoreData) : null;
+        const audioBlob = await dataURLToBlob(s.audioData);
+        await dbPut({
+          id: s.id,
+          title: s.title,
+          category: s.category || '',
+          scoreType: s.scoreType,
+          scoreBlob,
+          scoreText: s.scoreType === 'text' ? (s.scoreText || '') : null,
+          audioBlob,
+          dateAdded: s.dateAdded || Date.now()
+        });
+        count++;
+      }
+
+      let setlistCount = 0;
+      if(Array.isArray(payload.setlists)){
+        for(const sl of payload.setlists){
+          await dbPutSetlist({
+            id: sl.id,
+            name: sl.name,
+            songIds: Array.isArray(sl.songIds) ? sl.songIds : [],
+            dateCreated: sl.dateCreated || Date.now()
+          });
+          setlistCount++;
+        }
+      }
+
+      await loadFromDB();
+      await loadSetlistsFromDB();
+      dbStatus.textContent = setlistCount
+        ? `Se importaron ${count} canción(es) y ${setlistCount} repertorio(s) a este dispositivo.`
+        : `Se importaron ${count} canción(es) a este dispositivo.`;
+    } catch(err){
+      console.error(err);
+      dbStatus.textContent = 'No se pudo leer ese archivo. Comprueba que es una base de datos exportada desde esta app.';
+    } finally {
+      importInput.value = '';
+    }
+  });
+
+  // ---- Registro del Service Worker (app instalable y offline) ----
+  // Solo funciona si la página se sirve por https:// o localhost,
+  // no al abrir el archivo directamente (file://).
+  if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .catch(err => console.warn('No se pudo registrar el service worker:', err));
+    });
+  }
+</script>
+
+</body>
+</html>
